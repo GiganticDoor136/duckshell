@@ -6,8 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -77,7 +77,8 @@ func printSysinfo(config *SysinfoConfig) {
 func printCPUInfo(config *SysinfoConfig) {
 	fmt.Println("CPU Info:")
 	fmt.Printf("  Model: %s\n", getCPUInfo(config.CPU.Model))
-	fmt.Printf("  Cores: %s\n", getCPUInfo(config.CPU.Cores))
+	coresStr := strconv.Itoa(config.CPU.Cores) // Преобразование int в string
+	fmt.Printf("  Cores: %s\n", getCPUInfo(coresStr))
 }
 
 func printMemoryInfo(config *SysinfoConfig) {
@@ -88,10 +89,10 @@ func printMemoryInfo(config *SysinfoConfig) {
 
 func printOSInfo(config *SysinfoConfig) {
 	fmt.Println("\nOS Info:")
-	fmt.Printf("  Name: %s\n", getOSInfo(config.OS.Name))
-	fmt.Printf("  Kernel: %s\n", getOSInfo(config.OS.Kernel))
-	fmt.Printf("  Uptime: %s\n", getOSInfo(config.OS.Uptime))
-	fmt.Printf("  Hostname: %s\n", getOSInfo(config.OS.Hostname))
+	fmt.Printf("  Name: %s\n", getOSInfo("name"))
+	fmt.Printf("  Kernel: %s\n", getOSInfo("kernel"))
+	fmt.Printf("  Uptime: %s\n", getOSInfo("uptime"))
+	fmt.Printf("  Hostname: %s\n", getOSInfo("hostname"))
 }
 
 func printCustomixeInfo(config *SysinfoConfig) {
@@ -244,7 +245,6 @@ func getMemoryInfo(key string) string {
 					parts := strings.Fields(line)
 					if len(parts) > 2 {
 						totalMemory := parts[2]
-						// Convert bytes to megabytes
 						totalMemoryMB := convertBytesToMegabytes(totalMemory)
 						return totalMemoryMB
 					}
@@ -291,7 +291,6 @@ func getMemoryInfo(key string) string {
 					parts := strings.Fields(line)
 					if len(parts) > 2 {
 						freeMemory := parts[2]
-						// Convert bytes to megabytes
 						freeMemoryMB := convertBytesToMegabytes(freeMemory)
 						return freeMemoryMB
 					}
@@ -304,7 +303,11 @@ func getMemoryInfo(key string) string {
 				return "Error: " + err.Error()
 			}
 			availPages := strings.TrimSpace(string(output))
-			availMemoryBytes := strconv.ParseUint(availPages, 10, 64) * 4096
+			availPagesUint, err := strconv.ParseUint(availPages, 10, 64) // Corrected: handle error
+			if err != nil {
+				return "Error: " + err.Error() // Corrected: return error string
+			}
+			availMemoryBytes := availPagesUint * 4096
 			availMemoryMB := convertBytesToMegabytes(strconv.FormatUint(availMemoryBytes, 10))
 			return availMemoryMB
 		default:
@@ -323,4 +326,41 @@ func convertBytesToMegabytes(bytes string) string {
 	}
 	megabytes := bytesInt / (1024 * 1024)
 	return strconv.FormatUint(megabytes, 10)
+}
+
+func getOSInfo(key string) string {
+	switch key {
+	case "name":
+		return runtime.GOOS
+	case "kernel":
+		// Implementation for kernel depends on the OS.  This is a placeholder.
+		return "Unknown"
+	case "uptime":
+		// Implementation for uptime depends on the OS. This is a placeholder.
+		return "Unknown"
+	case "hostname":
+		hostname, err := os.Hostname()
+		if err != nil {
+			return "Unknown"
+		}
+		return hostname
+	default:
+		return "Unknown"
+	}
+}
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return "Unknown"
+	}
+	return hostname
+}
+
+func getCurrentPath() string {
+	path, err := os.Getwd()
+	if err != nil {
+		return "Unknown"
+	}
+	return path
 }

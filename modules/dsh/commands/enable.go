@@ -18,12 +18,3 @@ func Enable(funcName string) {
 		fmt.Println("Enabling function:", funcName)
 	}
 }
-
-func Disable(funcName string) {
-	switch funcName {
-	case "customixe":
-		dshfunc.DisableCustomixe()
-	default:
-		fmt.Println("Disabling function:", funcName)
-	}
-}

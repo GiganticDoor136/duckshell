@@ -20,7 +20,7 @@ func main() {
 
 	flag.Parse()
 
-	err := func.LoadCustomCmds()
+	err := dshfunc.LoadCustomCmds()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error loading custom commands:", err)
 	}
@@ -59,7 +59,7 @@ func main() {
 	if len(args) > 0 {
 		command := args[0]
 
-		if newCmd, ok := func.CustomCmds()[command]; ok {
+		if newCmd, ok := dshfunc.CustomCmds()[command]; ok {
 			args[0] = newCmd 
 			command = newCmd
 			fmt.Println("Executing custom command:", command, args)

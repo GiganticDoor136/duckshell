@@ -11,7 +11,7 @@ func Disable(funcName string) {
 	case "customixe":
 		dshfunc.DisableCustomixe()
 	case "customcmds":
-		dshfunc.DisableCustomcmds()
+		dshfunc.DisableCustomCmds()
 	default:
 		fmt.Println("Disabling function:", funcName)
 	}
