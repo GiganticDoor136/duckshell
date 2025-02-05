@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/GiganticDoor136/duckshell/modules/dsh/commands"
-	"github.com/GiganticDoor136/duckshell/modules/dsh/func"
+	"github.com/GiganticDoor136/duckshell/modules/dsh/commands" 
+	dshfunc "github.com/GiganticDoor136/duckshell/modules/dsh/func" 
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 
 	flag.Parse()
 
-	err := dshfunc.LoadCustomCmds()
+	err := dshfunc.LoadCustomCmds() 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error loading custom commands:", err)
 	}
@@ -31,27 +31,27 @@ func main() {
 	}
 
 	if *sysinfoFlag {
-		commands.Sysinfo()
+		commands.Sysinfo() 
 		return
 	}
 
 	if *help || *helpLong {
-		commands.Help()
+		commands.Help() 
 		return
 	}
 
 	if *enable != "" {
-		commands.Enable(*enable)
+		commands.Enable(*enable) 
 		return
 	}
 
 	if *disable != "" {
-		commands.Disable(*disable)
+		commands.Disable(*disable) 
 		return
 	}
 
 	if *ctl != "" {
-		commands.Ctl(*ctl)
+		commands.Ctl(*ctl) 
 		return
 	}
 
@@ -59,17 +59,17 @@ func main() {
 	if len(args) > 0 {
 		command := args[0]
 
-		if newCmd, ok := dshfunc.CustomCmds()[command]; ok {
-			args[0] = newCmd 
+		if newCmd, ok := dshfunc.GetCustomCmds()[command]; ok { 
+			args[0] = newCmd
 			command = newCmd
 			fmt.Println("Executing custom command:", command, args)
 		}
 
 		switch command {
 		case "ld":
-			commands.Ld(args[1:])
+			commands.Ld(args[1:]) 
 		case "mkfile":
-			commands.Mkfile(args[1:])
+			commands.Mkfile(args[1:]) 
 		default:
 			fmt.Println("Unknown command:", command)
 		}
