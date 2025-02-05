@@ -1,0 +1,8 @@
+[package]
+name = "duckshell"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+libloading = "0.8" # Или последняя версия
+getopts = "0.2" # Или последняя версия
